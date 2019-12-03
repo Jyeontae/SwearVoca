@@ -11,7 +11,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.activity_toback.*
+import kotlinx.coroutines.delay
+import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.concurrent.timer
+import kotlin.concurrent.timerTask
 import kotlin.random.Random
 
 
@@ -75,10 +81,9 @@ class toBack : AppCompatActivity() {
             }
             else{
                 failalert()
-                window.addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                Thread.sleep(10000)
+                Thread.sleep(5000L)
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-
+                finish()
             }
         }
         take2.setOnClickListener {
@@ -87,9 +92,9 @@ class toBack : AppCompatActivity() {
             }
             else{
                 failalert()
-                window.addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                Thread.sleep(10000)
+                Thread.sleep(5000L)
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                finish()
             }
         }
         take3.setOnClickListener {
@@ -98,9 +103,9 @@ class toBack : AppCompatActivity() {
             }
             else{
                 failalert()
-                window.addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                Thread.sleep(10000)
+                Thread.sleep(5000L)
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                finish()
             }
         }
         take4.setOnClickListener {
@@ -109,9 +114,9 @@ class toBack : AppCompatActivity() {
             }
             else{
                 failalert()
-                window.addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                Thread.sleep(10000)
+                Thread.sleep(5000L)
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                finish()
             }
         }
         var count : Int = 0
@@ -121,6 +126,7 @@ class toBack : AppCompatActivity() {
             }
             else{
                 count++
+                finish()
             }
             fail.setText("정말 모르겠습니다(${count} / 5)")
         }
@@ -135,10 +141,12 @@ class toBack : AppCompatActivity() {
     private fun failalert(){
         val builder = AlertDialog.Builder(ContextThemeWrapper(this, R.style.Theme_AppCompat_Light_Dialog))
         builder.setTitle("틀림!")
-        builder.setMessage("틀렸으므로 5분동안 잠그겠습니다.")
+        builder.setMessage("틀렸으므로 5분동안 잠깁니다.")
         builder.setPositiveButton("확인"){dialog, id ->
+            window.addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         }
         builder.show()
+
     }
 
 }
