@@ -1,6 +1,8 @@
 package com.example.swearvoca
 
 
+import android.content.DialogInterface
+import android.content.Intent
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
@@ -22,6 +24,7 @@ import kotlin.random.Random
 
 
 class toBack : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_toback)
@@ -45,9 +48,8 @@ class toBack : AppCompatActivity() {
 
         val myHelper = myDBHelper(this)
         var sqlDB : SQLiteDatabase = myHelper.readableDatabase
-        //myHelper.onUpgrade(sqlDB, 1, 2)
-
         var cursor : Cursor
+
         cursor = sqlDB.rawQuery("SELECT * FROM voca;", null)
 
         var s1 : String = ""
@@ -80,10 +82,7 @@ class toBack : AppCompatActivity() {
                 finish()
             }
             else{
-                failalert()
-                Thread.sleep(5000L)
-                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                finish()
+                failalert(quiz[check[test_word]], answer[check[test_word]])
             }
         }
         take2.setOnClickListener {
@@ -91,10 +90,7 @@ class toBack : AppCompatActivity() {
                 finish()
             }
             else{
-                failalert()
-                Thread.sleep(5000L)
-                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                finish()
+                failalert(quiz[check[test_word]], answer[check[test_word]])
             }
         }
         take3.setOnClickListener {
@@ -102,10 +98,7 @@ class toBack : AppCompatActivity() {
                 finish()
             }
             else{
-                failalert()
-                Thread.sleep(5000L)
-                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                finish()
+                failalert(quiz[check[test_word]], answer[check[test_word]])
             }
         }
         take4.setOnClickListener {
@@ -113,10 +106,7 @@ class toBack : AppCompatActivity() {
                 finish()
             }
             else{
-                failalert()
-                Thread.sleep(5000L)
-                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                finish()
+                failalert(quiz[check[test_word]], answer[check[test_word]])
             }
         }
         var count : Int = 0
@@ -131,22 +121,29 @@ class toBack : AppCompatActivity() {
             fail.setText("정말 모르겠습니다(${count} / 5)")
         }
 
-      //  check.clear()
-        cursor = sqlDB.rawQuery("DROP TABLE voca;", null)
+        cursor = sqlDB.rawQuery("DELETE FROM voca;", null)
         cursor.close()
         sqlDB.close()
 
 
     }
-    private fun failalert(){
+    private fun failalert(voca: String, mean: String){
         val builder = AlertDialog.Builder(ContextThemeWrapper(this, R.style.Theme_AppCompat_Light_Dialog))
         builder.setTitle("틀림!")
-        builder.setMessage("틀렸으므로 5분동안 잠깁니다.")
-        builder.setPositiveButton("확인"){dialog, id ->
-            window.addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        builder.setMessage("${voca}의 뜻은 ${mean}입니다. \n틀렸으므로 5분동안 잠깁니다.")
+        builder.setPositiveButton("확인"){ dialogInterface: DialogInterface, i: Int ->
+            pauseNstart()
         }
         builder.show()
-
     }
+
+    private fun pauseNstart(){ // 5분 터치 x 후 터치가능
+        window.addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        Thread.sleep(5000L)
+        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        finish()
+    }
+
+
 
 }

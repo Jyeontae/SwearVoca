@@ -5,6 +5,7 @@ import android.content.Intent
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.opencsv.CSVReader
@@ -23,29 +24,30 @@ class study : AppCompatActivity() {
         setContentView(R.layout.activity_study)
         setTitle("영단어 학습하기")
 
+        val save_word_c: Int = loadData() // 240
+        Log.d("123", save_word_c.toString())
         val myHelper = myDBHelper(this)
         var sqlDB : SQLiteDatabase = myHelper.writableDatabase
         myHelper.onUpgrade(sqlDB, 1, 2)
 
-        var word_count : Int = intent.getIntExtra("word_count", 0)
-        var total_count : Int = 0
+        var word_count : Int = intent.getIntExtra("word_count", 0)// 30
         
         try {
             val iss: InputStreamReader = InputStreamReader(resources.openRawResource(R.raw.voca), "UTF-8")
             val reader: BufferedReader = BufferedReader(iss)
             val read : CSVReader = CSVReader(reader)
             var record : List<String>
-            total_count = total_count + word_count //30
             var i : Int = 0
-            val flag : Int = total_count - word_count
-            do{
-                if(i >= flag) {
-                    record = read.readNext().toList()
+            val flag : Int = save_word_c - word_count // 210
+
+            do{ //if0~90
+                record = read.readNext().toList()
+                if(i >= flag) { //flag = 60  60~90 index의 파일 load
                     word.add(record.toString().split(",")[0].replace("[", ""))
                     mean.add(record.toString().split(",")[1].replace("]", ""))
                 }
                 i++
-            }while(i<total_count)
+            }while(i<save_word_c)
         }catch (e : Exception){
             e.printStackTrace()
         }
@@ -93,5 +95,9 @@ class study : AppCompatActivity() {
             finish()
         }
     }
-
+    private fun loadData(): Int{
+        val pref = PreferenceManager.getDefaultSharedPreferences(this)
+        var wordcount = pref.getInt("KEY_WORDCOUNT",0)
+        return wordcount
+    }
 }
