@@ -13,25 +13,31 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.Month
 
+/** 단어개수설정 초기화 시간설정
+ * 기능을 수행함
+ */
 class MainActivity : AppCompatActivity() {
-    var todayY:Int = 0
-    var todayM: Int = 0
-    var todayD:Int =0
+    var todayY:Int = 2019
+    var todayM: Int = 1
+    var todayD:Int =1
     var todayHour: Int = 0
-    var todayMinute: Int =0
+    var todayMinute: Int = 0
     var wordcount: Int = 30
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setTitle("학습 설정")
 
-        loadTimeData()
+        if(todayY != 9999){ //어플 처음 시작일 때 오류잡기
+            loadTimeData()
+        }
 
         var init_Time : String = "00시 00분"
         gasu.setText("30")
         wordcount  = gasu.text.toString().toInt() //단어개수 디폴트 30
         var total_word: Int = loadData()
         gasu.setText("$wordcount")
+
 
         date_btn.setOnClickListener{    //시간 설정
             timePicker.visibility = View.VISIBLE
@@ -73,20 +79,21 @@ class MainActivity : AppCompatActivity() {
         } //시작 이벤트 처리
     }
 
-    private fun saveData(wordcount : Int){
+     fun saveData(wordcount : Int){  //단어 index저장
         val pref = PreferenceManager.getDefaultSharedPreferences(this)
         val editor = pref.edit()
+        if(wordcount >= 5147){ this.wordcount = 0}
         editor.putInt("KEY_WORDCOUNT", wordcount)
                 .apply()
     }
 
-    private fun loadData(): Int{
+    private fun loadData(): Int{ //단어 index 불러오기
         val pref = PreferenceManager.getDefaultSharedPreferences(this)
         var wordcount = pref.getInt("KEY_WORDCOUNT",0)
         return wordcount
     }
 
-    private fun saveTimeData(y: Int, m: Int, d: Int, h: Int, m2: Int){
+    private fun saveTimeData(y: Int, m: Int, d: Int, h: Int, m2: Int){ //설정 시간 저장
         val pref = PreferenceManager.getDefaultSharedPreferences(this)
         val editor = pref.edit()
         editor.putInt("KEY_YEAR", y)
@@ -99,15 +106,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadTimeData(){
         val pref = PreferenceManager.getDefaultSharedPreferences(this)
-            var s1 =pref.getInt("KEY_YEAR", 2019)
+            var s1 =pref.getInt("KEY_YEAR", 9999)
             var s2 = pref.getInt("KEY_MONTH", 1)
             var s3 = pref.getInt("KEY_DAY", 1)
             var s4 = pref.getInt("KEY_HOUR", 0)
             var s5 = pref.getInt("KEY_MINUTE", 0)
-            //var dateTime = LocalDateTime.of(s1, s2, s3, s4, s5).plusDays(1)
-            var dateTime = LocalDateTime.of(s1, s2, s3, s4, s5) //시간 설정의시간
+            var dateTime = LocalDateTime.of(s1, s2, s3, s4, s5).plusDays(1) //설정시간보다 24시간 후의 시간
+            //var dateTime = LocalDateTime.of(s1, s2, s3, s4, s5) //시간 설정의시간
         Log.d("date", dateTime.toString())
-        if(dateTime >= LocalDateTime.now()){
+        if(dateTime >= LocalDateTime.now()){ //dateTime 전까지 MainActivity숨기기
             startActivity<study>(
                 "word_count" to wordcount
             )

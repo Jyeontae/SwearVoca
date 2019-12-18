@@ -5,7 +5,7 @@ import android.content.Intent
 
 import android.content.IntentFilter
 import android.os.IBinder
-
+/** 잠금화면을 활성화하는 클래스 **/
 class ScreenService : Service(){
     private lateinit var mReceiver : ScreenReceiver
 
